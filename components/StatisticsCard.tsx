@@ -48,8 +48,10 @@ export default function StatisticsCard({ items, title }: StatisticsCardProps) {
   }, [items]);
 
   return (
-    <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 max-w-3xl mx-auto mt-12">
-      <CardContent className="p-6">
+    <Card className="relative overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 max-w-3xl mx-auto mt-12 bg-dot-white/[0.1] bg-dot-black/[0.1]">
+      
+      
+      <CardContent className="relative p-6 z-10">
         <h2 className="text-2xl font-bold mb-4">{title}</h2>
         <div className="grid grid-cols-2 gap-4">
           <div>

@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { EuroIcon, Pencil, Trash2, RefreshCw } from 'lucide-react';
+import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 
 interface ItemCardProps {
   item: VintageItem;
@@ -114,6 +115,16 @@ export default function ItemCard({ item, onEdit, onSell, onUpdateValue, onDelete
                 {calculateProfit(item) >= 0 ? ' guadagno netto' : ' perdita netta'}{' '}
                 in {calculateTimeSinceAcquisition(item.purchaseDate, item.saleDate)}
               </p>
+            </div>
+            {/* Add AnimatedTooltip component before the card ends */}
+            <div className="mt-4">
+              <AnimatedTooltip
+                items={[
+                  { id: 1, name: 'Item 1', designation: 'Vintage', image: '/images/placeholder.png' },
+                  { id: 2, name: 'Item 2', designation: 'Antique', image: '/images/placeholder1.png' },
+                  { id: 3, name: 'Item 3', designation: 'Rolex', image: '/images/placeholder2.png' },
+                ]}
+              />
             </div>
           </CardContent>
         </TabsContent>

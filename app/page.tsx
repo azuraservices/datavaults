@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { VintageItem } from '/types/VintageItem';
+import { VintageItem } from '@/types/VintageItem';
 import Header from '../components/Header';
 import SearchAndFilter from '../components/SearchAndFilter';
 import ItemList from '../components/ItemList';

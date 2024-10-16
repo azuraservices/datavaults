@@ -103,7 +103,7 @@ const Skeleton = () => {
         x: [-130, 130], // Muove la linea da sinistra a destra, puoi regolare 300 come desideri
       }}
       transition={{
-        duration: 4,
+        duration: 5,
         repeat: Infinity,
         ease: "linear",
       }}

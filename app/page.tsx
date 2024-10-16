@@ -133,7 +133,7 @@ export default function DataVAULT() {
       purchasePrice: randomPurchasePrice,
       purchaseDate: randomPurchaseDate.toLocaleDateString('it-IT'),
       currentValue: Math.floor(randomCurrentValue),
-      image: '../images/placeholder.png',
+      image: './images/placeholder.png',
       createdAt: Date.now(),
     };
   };

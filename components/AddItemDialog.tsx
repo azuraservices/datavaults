@@ -31,7 +31,7 @@ export default function AddItemDialog({ isOpen, onClose, onAdd }: AddItemDialogP
     purchasePrice: 0,
     purchaseDate: '',
     currentValue: 0,
-    image: '../images/placeholder.png',
+    image: './images/placeholder.png',
   });
   const [formErrors, setFormErrors] = useState<Record<string, boolean>>({});
   const [isLoading, setIsLoading] = useState(false);

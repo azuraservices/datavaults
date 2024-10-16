@@ -103,7 +103,7 @@ const Skeleton = () => {
         x: [-130, 130], // Muove la linea da sinistra a destra, puoi regolare 300 come desideri
       }}
       transition={{
-        duration: 6,
+        duration: 4,
         repeat: Infinity,
         ease: "linear",
       }}
@@ -168,10 +168,10 @@ export const CardSkeletonContainer = ({
   return (
     <div
       className={cn(
-        "h-[6rem] md:h-[8rem] rounded-xl z-40 mb-5",
+        "h-[6rem] md:h-[8rem] rounded-xl z-40 mb-8",
         className,
         showGradient &&
-          "bg-neutral-200 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]"
+          "bg-neutral-100 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]"
       )}
     >
       {children}

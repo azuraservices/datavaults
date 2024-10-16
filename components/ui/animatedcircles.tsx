@@ -59,12 +59,22 @@ const Skeleton = () => {
   ];
 
   useEffect(() => {
-    // @ts-ignore
-    animate(sequence, {
-      // repeat: Infinity,
-      // repeatDelay: 1,
-    });
+    const runAnimation = () => {
+      sequence.forEach(([target, properties], index) => {
+        setTimeout(() => {
+          animate(target, properties, { duration: 0.8 });
+        }, index * 800); // Ritardo di 800ms tra ciascuna icona
+      });
+    };
+  
+    runAnimation(); // Esegui l'animazione una volta
+    const interval = setInterval(() => {
+      runAnimation(); // Ripeti l'animazione
+    }, 4000); // 4000ms per completare l'animazione di tutte le icone
+  
+    return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
   }, []);
+
   return (
     <div className="p-8 overflow-hidden h-full relative flex items-center justify-center">
       <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2">
@@ -93,7 +103,7 @@ const Skeleton = () => {
         x: [-130, 130], // Muove la linea da sinistra a destra, puoi regolare 300 come desideri
       }}
       transition={{
-        duration: 3,
+        duration: 6,
         repeat: Infinity,
         ease: "linear",
       }}
@@ -158,10 +168,10 @@ export const CardSkeletonContainer = ({
   return (
     <div
       className={cn(
-        "h-[8rem] md:h-[8rem] rounded-xl z-40 mb-4",
+        "h-[6rem] md:h-[8rem] rounded-xl z-40 mb-5",
         className,
         showGradient &&
-          "bg-neutral-150 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]"
+          "bg-neutral-200 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]"
       )}
     >
       {children}

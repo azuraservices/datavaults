@@ -78,19 +78,19 @@ const Skeleton = () => {
   return (
     <div className="p-8 overflow-hidden h-full relative flex items-center justify-center">
       <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2">
-        <Container className="h-8 w-8 circle-1">
+        <Container className="h-8 w-8 circle-1 border-2 border-grey-700">
           <ClaudeLogo className="h-4 w-4 " />
         </Container>
-        <Container className="h-12 w-12 circle-2">
+        <Container className="h-12 w-12 circle-2 border-2 border-grey-700">
           <Bolt className="h-6 w-6 dark:text-white" />
         </Container>
-        <Container className="circle-3">
+        <Container className="circle-3 border-2 border-grey-700">
           <OpenAILogo className="h-8 w-8 dark:text-white" />
         </Container>
-        <Container className="h-12 w-12 circle-4">
+        <Container className="h-12 w-12 circle-4 border-2 border-grey-700">
           <MetaIconOutline className="h-6 w-6 " />
         </Container>
-        <Container className="h-8 w-8 circle-5">
+        <Container className="h-8 w-8 circle-5 border-2 border-grey-700">
           <GeminiLogo className="h-4 w-4 " />
         </Container>
       </div>
@@ -103,7 +103,7 @@ const Skeleton = () => {
         x: [-130, 130], // Muove la linea da sinistra a destra, puoi regolare 300 come desideri
       }}
       transition={{
-        duration: 3,
+        duration: 4,
         repeat: Infinity,
         ease: "linear",
       }}
@@ -168,7 +168,7 @@ export const CardSkeletonContainer = ({
   return (
     <div
       className={cn(
-        "h-[6rem] md:h-[8rem] rounded-xl z-40 mb-8",
+        "h-[6rem] md:h-[6rem] rounded-xl z-40 mb-8",
         className,
         showGradient &&
           "bg-neutral-100 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]"

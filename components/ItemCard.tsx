@@ -5,8 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { EuroIcon, Pencil, Trash2, RefreshCw } from 'lucide-react';
-import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
-import CollectorsIntuitionMeter from '@/components/ui/intuitionmeter';
+
 import { CardDemo } from './ui/animatedcircles';
 
 interface ItemCardProps {
@@ -74,7 +73,17 @@ export default function ItemCard({ item, onEdit, onSell, onUpdateValue, onDelete
             </div>
             {/* Add AnimatedTooltip component before the profit */}
             <div className="m-0">
-              <CardDemo />
+              <CardDemo 
+                itemDetails={{
+                name: item.name,
+                category: item.category,
+                year: item.year,
+                purchasePrice: item.purchasePrice,
+                purchaseDate: item.purchaseDate,
+                currentValue: item.currentValue,
+              }}
+              />
+              
             </div>
 
             <div className="mb-4 flex items-center justify-between">

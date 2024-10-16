@@ -1,14 +1,76 @@
 "use client";
+import { cn } from "@/lib/utils";
 import { animate, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
-import { cn } from "@/lib/utils";
-import { Lightbulb, ThumbsUp, ThumbsDown, Zap, Bolt } from 'lucide-react'
+import axios from 'axios';
+import { Lightbulb, ThumbsUp, ThumbsDown, Zap, Bolt } from 'lucide-react';
 
-export function CardDemo() {
+interface IntuitionFactor {
+  name: string;
+  score: string;
+  icon: React.ReactNode;
+}
+
+interface ArticleDetails {
+  name: string;
+  category: string;
+  year: string;
+  purchasePrice: number;
+  purchaseDate: string;
+  currentValue: number;
+}
+
+interface EstimationResponse {
+  rarity: string;
+  marketDemand: string;
+  condition: string;
+  provenance: string;
+}
+
+export function CardDemo({ itemDetails }: { itemDetails: ArticleDetails }) {
+  const [isContentVisible, setIsContentVisible] = useState(false);
+  const [factors, setFactors] = useState<IntuitionFactor[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  const handleCardClick = async () => {
+    setIsContentVisible(prevState => !prevState);
+
+    if (!isContentVisible) {
+      setLoading(true);
+      try {
+        const estimation = await fetchCollectibleEstimation(itemDetails);
+        setFactors([
+          { name: "Rarity", score: estimation.rarity, icon: <Lightbulb className="w-4 h-4" /> },
+          { name: "Market Demand", score: estimation.marketDemand, icon: <ThumbsUp className="w-4 h-4" /> },
+          { name: "Condition", score: estimation.condition, icon: <Zap className="w-4 h-4" /> },
+          { name: "Provenance", score: estimation.provenance, icon: <ThumbsDown className="w-4 h-4" /> },
+        ]);
+      } catch (error) {
+        console.error('Error fetching estimation:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
   return (
-      <CardSkeletonContainer>
-        <Skeleton />
-      </CardSkeletonContainer>
+    <>
+      <div onClick={handleCardClick}>
+        <CardSkeletonContainer>
+          <Skeleton />
+        </CardSkeletonContainer>
+      </div>
+
+      {isContentVisible && (
+        <div className="mt-4 pb-8">
+          {loading ? (
+            <div>Loading estimation data...</div>
+          ) : (
+            <CollectorsIntuition factors={factors} />
+          )}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -16,46 +78,11 @@ const Skeleton = () => {
   const scale = [1, 1.1, 1];
   const transform = ["translateY(0px)", "translateY(-4px)", "translateY(0px)"];
   const sequence = [
-    [
-      ".circle-1",
-      {
-        scale,
-        transform,
-      },
-      { duration: 0.8 },
-    ],
-    [
-      ".circle-2",
-      {
-        scale,
-        transform,
-      },
-      { duration: 0.8 },
-    ],
-    [
-      ".circle-3",
-      {
-        scale,
-        transform,
-      },
-      { duration: 0.8 },
-    ],
-    [
-      ".circle-4",
-      {
-        scale,
-        transform,
-      },
-      { duration: 0.8 },
-    ],
-    [
-      ".circle-5",
-      {
-        scale,
-        transform,
-      },
-      { duration: 0.8 },
-    ],
+    [".circle-1", { scale, transform }, { duration: 0.8 }],
+    [".circle-2", { scale, transform }, { duration: 0.8 }],
+    [".circle-3", { scale, transform }, { duration: 0.8 }],
+    [".circle-4", { scale, transform }, { duration: 0.8 }],
+    [".circle-5", { scale, transform }, { duration: 0.8 }],
   ];
 
   useEffect(() => {
@@ -63,16 +90,16 @@ const Skeleton = () => {
       sequence.forEach(([target, properties], index) => {
         setTimeout(() => {
           animate(target, properties, { duration: 0.8 });
-        }, index * 800); // Ritardo di 800ms tra ciascuna icona
+        }, index * 800);
       });
     };
-  
-    runAnimation(); // Esegui l'animazione una volta
+
+    runAnimation();
     const interval = setInterval(() => {
-      runAnimation(); // Ripeti l'animazione
-    }, 4000); // 4000ms per completare l'animazione di tutte le icone
-  
-    return () => clearInterval(interval); // Pulisce l'intervallo quando il componente viene smontato
+      runAnimation();
+    }, 4000);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -95,29 +122,19 @@ const Skeleton = () => {
         </Container>
       </div>
 
-
-
-    <motion.div
-      className="h-40 w-px absolute top-22 m-auto z-40 bg-gradient-to-b from-transparent via-cyan-500 to-transparent"
-      animate={{
-        x: [-130, 130], // Muove la linea da sinistra a destra, puoi regolare 300 come desideri
-      }}
-      transition={{
-        duration: 4,
-        repeat: Infinity,
-        ease: "linear",
-      }}
-    >
-      <div className="w-10 h-32 top-1/2 -translate-y-1/2 absolute -left-10">
-        <Sparkles />
-      </div>
-    </motion.div>
-
-
-
+      <motion.div
+        className="h-40 w-px absolute top-22 m-auto z-40 bg-gradient-to-b from-transparent via-cyan-500 to-transparent"
+        animate={{ x: [-130, 130] }}
+        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+      >
+        <div className="w-10 h-32 top-1/2 -translate-y-1/2 absolute -left-10">
+          <Sparkles />
+        </div>
+      </motion.div>
     </div>
   );
 };
+
 const Sparkles = () => {
   const randomMove = () => Math.random() * 2 - 1;
   const randomOpacity = () => Math.random();
@@ -128,8 +145,8 @@ const Sparkles = () => {
         <motion.span
           key={`star-${i}`}
           animate={{
-            top: `calc(${random() * 100}% + ${randomMove()}px)`,
-            left: `calc(${random() * 100}% + ${randomMove()}px)`,
+            top: `calc(${Math.random() * 100}% + ${randomMove()}px)`,
+            left: `calc(${Math.random() * 100}% + ${randomMove()}px)`,
             opacity: randomOpacity(),
             scale: [1, 1.2, 0],
           }}
@@ -140,8 +157,8 @@ const Sparkles = () => {
           }}
           style={{
             position: "absolute",
-            top: `${random() * 100}%`,
-            left: `${random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            left: `${Math.random() * 100}%`,
             width: `2px`,
             height: `2px`,
             borderRadius: "50%",
@@ -154,7 +171,59 @@ const Sparkles = () => {
   );
 };
 
+const CollectorsIntuition = ({ factors }: { factors: IntuitionFactor[] }) => (
+  <div className="flex flex-col gap-4">
+    {factors.map((factor, index) => (
+      <div key={index} className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {factor.icon}
+          <span>{factor.name}</span>
+        </div>
+        <span>{factor.score}</span>
+      </div>
+    ))}
+  </div>
+);
 
+const fetchCollectibleEstimation = async (articleDetails: ArticleDetails): Promise<EstimationResponse> => {
+  const prompt = `Usa questi dettagli per stimare la rarità, la domanda di mercato, le condizioni e la provenienza di un articolo:
+  Nome: ${articleDetails.name}
+  Categoria: ${articleDetails.category}
+  Anno: ${articleDetails.year}
+  Prezzo d'acquisto: ${articleDetails.purchasePrice}
+  Data d'acquisto: ${articleDetails.purchaseDate}
+  Valore attuale: ${articleDetails.currentValue}
+
+  OUTPUT ONLY JSON: rarity, marketDemand, condition, provenance. NO OTHER TEXT`;
+
+  console.log("Prompt inviato:", prompt);
+
+  const url = 'https://api.groq.com/openai/v1/chat/completions';
+  const headers = {
+    Authorization: 'Bearer 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',
+    'Content-Type': 'application/json',
+  };
+  const data = {
+    model: 'llama-3.2-90b-text-preview',
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.5,
+    max_tokens: 100,
+    top_p: 1,
+    stream: false,
+  };
+
+  try {
+    const response = await axios.post(url, data, { headers });
+    const content = response.data.choices[0].message.content;
+    console.log('Risposta API:', content);
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Error fetching estimation:', error);
+    throw new Error('API request failed');
+  }
+};
+
+{/* EXPORT */}
 
 export const CardSkeletonContainer = ({
   className,

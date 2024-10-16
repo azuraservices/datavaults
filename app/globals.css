@@ -72,6 +72,19 @@
   }
 }
 
+@keyframes move {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-move {
+  animation: move 4s linear infinite;
+}
+
 @layer base {
   * {
     @apply border-border;

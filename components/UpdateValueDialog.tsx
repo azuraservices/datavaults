@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { RotateCw, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { RotateCw, AlertCircle, CheckCircle2, Wand2 } from 'lucide-react';
 
 interface UpdateValueDialogProps {
   item: { id: number; currentValue: number } | null;
@@ -49,16 +49,26 @@ export default function UpdateValueDialog({ item, onClose, onUpdate }: UpdateVal
 
   return (
     <Dialog open={!!item} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-[350px] p-6 rounded-lg shadow-md">
         <DialogHeader>
           <DialogTitle>Aggiorna Valore Attuale</DialogTitle>
           <DialogDescription>
             Aggiorna il valore attuale dell'articolo o usa il prezzo suggerito.
           </DialogDescription>
+          <div className='flex flex-col pt-2 md:flex-row md:space-y-0'>
+          <Button
+            onClick={findSuggestedPrice}
+            disabled={isLoading}
+            className="bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            <Wand2 className="mr-2 h-4 w-4" />
+            {isLoading ? 'Caricamento...' : 'Trova Prezzo'}
+          </Button>
+          </div>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 py-2 mb-2">
           <div className="grid grid-cols-5 items-center gap-4">
-            <Label htmlFor="current-value" className="text-right col-span-2">
+            <Label htmlFor="current-value" className="text-right col-span-2 text-sm">
               Valore Attuale
             </Label>
             <Input
@@ -70,15 +80,8 @@ export default function UpdateValueDialog({ item, onClose, onUpdate }: UpdateVal
               placeholder="es. 350"
             />
           </div>
-          <Button
-            onClick={findSuggestedPrice}
-            disabled={isLoading}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
-          >
-            {isLoading ? 'Caricamento...' : 'Trova Prezzo'}
-          </Button>
           {error && <p className="text-red-500 text-sm">{error}</p>}
-          <div className="space-y-2">
+          <div className="space-y-2 mt-2">
             <div className="flex items-center">
               <span className="mr-2">Ricerca del prezzo online</span>
               {agent1Status === 'idle' ? (

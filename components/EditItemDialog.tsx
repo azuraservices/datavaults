@@ -229,29 +229,35 @@ export default function EditItemDialog({
 
   return (
     <Dialog open={!!item} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-w-[350px] p-6 rounded-lg shadow-md">
         <DialogHeader>
           <DialogTitle>Modifica Articolo</DialogTitle>
           <DialogDescription>
             Modifica i dettagli del tuo articolo qui.
           </DialogDescription>
+          <div className='flex flex-col pt-2 md:flex-row md:space-y-0'>
+          <Button
+            onClick={handleAICompletion}
+            disabled={!editingItem.name || isLoading}
+            className="bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            <Wand2 className="mr-2 h-4 w-4" />
+            Completamento AI
+          </Button>
+          </div>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
+        <div className="grid gap-4 py-2">
           {[
             { key: 'name', label: 'Nome', type: 'text' },
             { key: 'category', label: 'Categoria', type: 'text' },
             { key: 'year', label: 'Anno', type: 'number' },
-            {
-              key: 'purchasePrice',
-              label: 'Prezzo di Acquisto',
-              type: 'number',
-            },
+            { key: 'purchasePrice', label: 'Prezzo di Acquisto', type: 'number' },
             { key: 'purchaseDate', label: 'Data di Acquisto', type: 'text' },
             { key: 'currentValue', label: 'Valore Attuale', type: 'number' },
             { key: 'image', label: 'URL Immagine', type: 'text' },
           ].map(({ key, label, type }) => (
             <div key={key} className="grid grid-cols-5 items-center gap-4">
-              <Label htmlFor={`edit-${key}`} className="text-right col-span-2">
+              <Label htmlFor={`edit-${key}`} className="text-right col-span-2 text-sm">
                 {label}
               </Label>
               <Input
@@ -262,20 +268,12 @@ export default function EditItemDialog({
                 onChange={handleInputChange}
                 className={`col-span-3 ${
                   formErrors[key] ? 'border-red-500' : ''
-                }`}
+                } text-sm`}
               />
             </div>
           ))}
         </div>
         <DialogFooter className="flex flex-col space-y-4 md:flex-row md:space-y-0">
-          <Button
-            onClick={handleAICompletion}
-            disabled={!editingItem.name || isLoading}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
-          >
-            <Wand2 className="mr-2 h-4 w-4" />
-            Completamento AI
-          </Button>
           <Button onClick={handleSubmit}>Salva Modifiche</Button>
         </DialogFooter>
       </DialogContent>

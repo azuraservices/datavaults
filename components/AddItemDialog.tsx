@@ -194,7 +194,8 @@ export default function AddItemDialog({ isOpen, onClose, onAdd }: AddItemDialogP
         <DialogHeader>
           <DialogTitle>Aggiungi Nuovo Articolo</DialogTitle>
           <DialogDescription>
-            Inserisci i dettagli del nuovo articolo qui.
+            Inserisci i dettagli del nuovo articolo.<br />
+            Oppure inserisci solo il Nome e clicca AI.
           </DialogDescription>
           <div className='flex flex-col pt-2 md:flex-row md:space-y-0 justify-center'>
           <Button

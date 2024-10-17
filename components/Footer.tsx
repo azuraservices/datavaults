@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { CircleHelp } from 'lucide-react';
 
 interface FooterProps {
   onAddItem: () => void;
@@ -15,12 +16,14 @@ export default function Footer({ onAddItem, onAddRandomItem }: FooterProps) {
 
   return (
     <div className="flex flex-col justify-center mt-8 space-y-4">
-      <div className="flex justify-center space-x-4">
-        <Button onClick={onAddItem}>Aggiungi Nuovo Articolo</Button>
-        <Button onClick={onAddRandomItem}>Articolo Casuale</Button>
-        <Button onClick={toggleTutorial}>
-          {showTutorial ? 'Nascondi Tutorial' : 'Mostra Tutorial'}
-        </Button>
+      <div className="flex flex-wrap justify-center space-x-4">
+        <Button className="flex-grow" onClick={onAddItem}>Nuovo Articolo</Button>
+        <Button className="flex-grow" onClick={onAddRandomItem}>Articolo Casuale</Button>
+        <CircleHelp 
+          className="cursor-pointer text-black hover:text-gray-800 flex-grow-0 mt-1" 
+          size={32} 
+          onClick={toggleTutorial} 
+        />
       </div>
 
 

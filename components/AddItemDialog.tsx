@@ -190,17 +190,17 @@ export default function AddItemDialog({ isOpen, onClose, onAdd }: AddItemDialogP
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[350px] p-6 rounded-lg shadow-md">
+      <DialogContent className="max-w-[350px] p-8 rounded-lg shadow-md">
         <DialogHeader>
           <DialogTitle>Aggiungi Nuovo Articolo</DialogTitle>
           <DialogDescription>
             Inserisci i dettagli del nuovo articolo qui.
           </DialogDescription>
-          <div className='flex flex-col pt-2 md:flex-row md:space-y-0'>
+          <div className='flex flex-col pt-2 md:flex-row md:space-y-0 justify-center'>
           <Button
             onClick={handleAICompletion}
             disabled={!newItem.name || isLoading}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
+            className="bg-blue-500 hover:bg-blue-600 text-white w-full"
           >
             <Wand2 className="mr-2 h-4 w-4" />
             Completamento AI

@@ -49,17 +49,17 @@ export default function UpdateValueDialog({ item, onClose, onUpdate }: UpdateVal
 
   return (
     <Dialog open={!!item} onOpenChange={onClose}>
-      <DialogContent className="max-w-[350px] p-6 rounded-lg shadow-md">
+      <DialogContent className="max-w-[350px] p-8 rounded-lg shadow-md">
         <DialogHeader>
           <DialogTitle>Aggiorna Valore Attuale</DialogTitle>
           <DialogDescription>
             Aggiorna il valore attuale dell'articolo o usa il prezzo suggerito.
           </DialogDescription>
-          <div className='flex flex-col pt-2 md:flex-row md:space-y-0'>
+          <div className='flex flex-col pt-2 md:flex-row md:space-y-0 justify-center'>
           <Button
             onClick={findSuggestedPrice}
             disabled={isLoading}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
+            className="bg-blue-500 hover:bg-blue-600 text-white w-full"
           >
             <Wand2 className="mr-2 h-4 w-4" />
             {isLoading ? 'Caricamento...' : 'Trova Prezzo'}
@@ -82,7 +82,7 @@ export default function UpdateValueDialog({ item, onClose, onUpdate }: UpdateVal
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}
           <div className="space-y-2 mt-2">
-            <div className="flex items-center">
+            <div className="flex justify-center items-center">
               <span className="mr-2">Ricerca del prezzo online</span>
               {agent1Status === 'idle' ? (
                 <AlertCircle className="h-4 w-4 text-gray-400" />

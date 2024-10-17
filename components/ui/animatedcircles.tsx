@@ -115,7 +115,7 @@ export function AIIntuiter({ itemDetails }: { itemDetails: ArticleDetails }) {
       <div className="relative">
         <button
           onClick={toggleTooltip}
-          className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none opacity-60"
+          className="p-2 rounded-full dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none border border-gray-200"
           aria-label="Informazioni sui clic disponibili"
         >
           <Info className="w-4 h-4 text-gray-800 dark:text-gray-200" />
@@ -272,10 +272,10 @@ const CollectorsIntuition = ({ factors }: { factors: IntuitionFactor[] }) => {
             <span className={cn("text-sm font-semibold")}>{factor.score}</span>
             <button
               onClick={() => handleInfoClick(factor.name)}
-              className="ml-2 p-1 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 opacity-60"
+              className="ml-2 p-1 rounded-full hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 "
               aria-label={`Informazioni su ${factor.name}`}
             >
-              <Info className="w-4 h-4 text-gray-800 dark:text-gray-200" />
+              <Info className="w-4 h-4 text-gray-400 dark:text-gray-200" />
             </button>
             {infoVisible[factor.name] && (
               <div className="absolute right-2 top-full transform mt-2 w-64 p-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded shadow-lg z-50">

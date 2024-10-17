@@ -164,36 +164,9 @@ export function AIIntuiter({ itemDetails }: { itemDetails: ArticleDetails }) {
 }
 
 const Skeleton = () => {
-  const scale = [1, 1.1, 1];
-  const yMove = [0, -4, 0];
-  const sequence = [
-    { target: ".circle-1", scale, yMove, duration: 0.8 },
-    { target: ".circle-2", scale, yMove, duration: 0.8 },
-    { target: ".circle-3", scale, yMove, duration: 0.8 },
-    { target: ".circle-4", scale, yMove, duration: 0.8 },
-    { target: ".circle-5", scale, yMove, duration: 0.8 },
-  ];
-
-  useEffect(() => {
-    const runAnimation = () => {
-      sequence.forEach(({ target, scale, yMove, duration }, index) => {
-        setTimeout(() => {
-          animate(target, { scale, y: yMove }, { duration });
-        }, index * 800);
-      });
-    };
-
-    runAnimation();
-    const interval = setInterval(() => {
-      runAnimation();
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="p-8 overflow-hidden h-full relative flex items-center justify-center">
-      <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2">
+      <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2 mt-4">
         <Container className="h-8 w-8 circle-1 border-2 border-gray-200">
           <Star className="w-4 h-4 text-yellow-500" /> {/* Icona colorata */}
         </Container>
@@ -212,7 +185,7 @@ const Skeleton = () => {
       </div>
 
       <motion.div
-        className="h-40 w-px absolute top-22 m-auto z-40 bg-gradient-to-b from-transparent via-cyan-500 to-transparent"
+        className="h-40 w-px absolute top-20 m-auto z-40 bg-gradient-to-b from-transparent via-cyan-500 to-transparent"
         animate={{ x: [-130, 130] }}
         transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
       >

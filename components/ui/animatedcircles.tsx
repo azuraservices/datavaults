@@ -166,7 +166,7 @@ export function AIIntuiter({ itemDetails }: { itemDetails: ArticleDetails }) {
 const Skeleton = () => {
   return (
     <div className="p-8 overflow-hidden h-full relative flex items-center justify-center">
-      <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2 mt-2">
+      <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2 mt-0">
         <Container className="h-8 w-8 circle-1 border-2 border-gray-200">
           <Star className="w-4 h-4 text-yellow-500" /> {/* Icona colorata */}
         </Container>
@@ -341,7 +341,7 @@ export const CardSkeletonContainer = ({
   return (
     <div
       className={cn(
-        "h-[6rem] md:h-[6rem] rounded-xl z-40 mb-8",
+        "h-[10rem] md:h-[10rem] rounded-xl z-40 mb-8",
         className,
         showGradient &&
           "bg-neutral-100 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]"

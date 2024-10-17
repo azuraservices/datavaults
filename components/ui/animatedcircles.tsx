@@ -1,9 +1,9 @@
 "use client";
+import React, { useEffect, useState, useRef } from "react";
+import axios from 'axios';
+import { Star, TrendingUp, Clock, Info, BarChart2, Zap } from 'lucide-react'; 
 import { cn } from "@/lib/utils";
 import { animate, motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
-import axios from 'axios';
-import { Lightbulb, ThumbsUp, ThumbsDown, Zap, Bolt } from 'lucide-react';
 
 interface IntuitionFactor {
   name: string;
@@ -23,73 +23,162 @@ interface ArticleDetails {
 interface EstimationResponse {
   rarity: string;
   marketDemand: string;
-  condition: string;
-  provenance: string;
+  longevity: string;
+  marketTrends: string;
 }
 
 export function CardDemo({ itemDetails }: { itemDetails: ArticleDetails }) {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [factors, setFactors] = useState<IntuitionFactor[]>([]);
   const [loading, setLoading] = useState(false);
+  const [clickCount, setClickCount] = useState<number>(0);
+  const [resetTime, setResetTime] = useState<string>('');
+  const [error, setError] = useState<string | null>(null);
+  const MAX_CLICKS = 20;
+
+  useEffect(() => {
+    const storedClicks = localStorage.getItem('clickCount');
+    const storedReset = localStorage.getItem('resetTime');
+
+    if (storedClicks && storedReset) {
+      const now = new Date();
+      const resetDate = new Date(storedReset);
+
+      if (now >= resetDate) {
+        setClickCount(0);
+        const nextReset = new Date();
+        nextReset.setDate(now.getDate() + 1);
+        setResetTime(nextReset.toISOString());
+        localStorage.setItem('clickCount', '0');
+        localStorage.setItem('resetTime', nextReset.toISOString());
+      } else {
+        setClickCount(parseInt(storedClicks, 10));
+        setResetTime(storedReset);
+      }
+    } else {
+      const nextReset = new Date();
+      nextReset.setDate(nextReset.getDate() + 1);
+      setResetTime(nextReset.toISOString());
+      localStorage.setItem('clickCount', '0');
+      localStorage.setItem('resetTime', nextReset.toISOString());
+    }
+  }, []);
+
+  const updateClickData = (newCount: number) => {
+    setClickCount(newCount);
+    localStorage.setItem('clickCount', newCount.toString());
+  };
 
   const handleCardClick = async () => {
+    if (loading) return; 
+    if (clickCount >= MAX_CLICKS) {
+      alert('Hai raggiunto il limite di clic per oggi. Riprova domani.');
+      return;
+    }
+
     setIsContentVisible(prevState => !prevState);
 
     if (!isContentVisible) {
       setLoading(true);
+      setError(null);
       try {
         const estimation = await fetchCollectibleEstimation(itemDetails);
         setFactors([
-          { name: "Rarity", score: estimation.rarity, icon: <Lightbulb className="w-4 h-4" /> },
-          { name: "Market Demand", score: estimation.marketDemand, icon: <ThumbsUp className="w-4 h-4" /> },
-          { name: "Condition", score: estimation.condition, icon: <Zap className="w-4 h-4" /> },
-          { name: "Provenance", score: estimation.provenance, icon: <ThumbsDown className="w-4 h-4" /> },
+          { name: "Rarità", score: estimation.rarity, icon: <Star className="w-4 h-4 text-yellow-500" /> },
+          { name: "Domanda di Mercato", score: estimation.marketDemand, icon: <TrendingUp className="w-4 h-4 text-green-500" /> },
+          { name: "Longevità", score: estimation.longevity, icon: <Clock className="w-4 h-4 text-orange-500" /> },
+          { name: "Tendenze di Mercato", score: estimation.marketTrends, icon: <BarChart2 className="w-4 h-4 text-purple-500" /> },
         ]);
+        updateClickData(clickCount + 1);
       } catch (error) {
-        console.error('Error fetching estimation:', error);
+        console.error('Errore durante il recupero della stima:', error);
+        setError('Impossibile recuperare i dati di stima. Riprova più tardi.');
       } finally {
         setLoading(false);
       }
     }
   };
 
+  const remainingClicks = MAX_CLICKS - clickCount;
+
+  const InfoIcon: React.FC<{ remainingClicks: number; resetTime: string }> = ({ remainingClicks, resetTime }) => {
+    const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+
+    const formattedResetTime = new Date(resetTime).toLocaleString();
+
+    const toggleTooltip = (event: React.MouseEvent) => {
+      event.stopPropagation();
+      setIsTooltipVisible(!isTooltipVisible);
+    };
+
+    return (
+      <div className="relative">
+        <button
+          onClick={toggleTooltip}
+          className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none"
+          aria-label="Informazioni sui clic disponibili"
+        >
+          <Info className="w-4 h-4 text-gray-800 dark:text-gray-200" />
+        </button>
+        {isTooltipVisible && (
+          <div className="absolute top-full transform right-2 mt-2 w-48 p-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded shadow-lg z-50">
+            <p className="text-sm text-gray-800 dark:text-gray-200">Stima il tuo articolo utilizzando un Collezionista AI.</p>
+            <p className="text-sm text-gray-800 dark:text-gray-200 mt-2 mb-2"></p>
+            <p className="text-sm text-gray-800 dark:text-gray-200">Clic rimanenti oggi: {remainingClicks}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">Si resetterà il: {formattedResetTime}</p>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <>
-      <div onClick={handleCardClick}>
+    <div className="relative">
+      <div className="absolute top-0 right-0 mt-2 mr-2 z-20">
+        <InfoIcon remainingClicks={remainingClicks} resetTime={resetTime} />
+      </div>
+
+      <button
+        onClick={handleCardClick}
+        className={`w-full text-left cursor-pointer ${clickCount >= MAX_CLICKS ? 'opacity-50 cursor-not-allowed' : ''}`}
+        disabled={clickCount >= MAX_CLICKS || loading}
+      >
         <CardSkeletonContainer>
           <Skeleton />
         </CardSkeletonContainer>
-      </div>
+      </button>
 
       {isContentVisible && (
         <div className="mt-4 pb-8">
           {loading ? (
-            <div>Loading estimation data...</div>
+            <div className=" text-sm text-gray-600 flex justify-center items-center">Un collezionista AI sta stimando il tuo articolo...</div>
+          ) : error ? (
+            <div className="text-red-500">{error}</div>
           ) : (
             <CollectorsIntuition factors={factors} />
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
 
 const Skeleton = () => {
   const scale = [1, 1.1, 1];
-  const transform = ["translateY(0px)", "translateY(-4px)", "translateY(0px)"];
+  const yMove = [0, -4, 0];
   const sequence = [
-    [".circle-1", { scale, transform }, { duration: 0.8 }],
-    [".circle-2", { scale, transform }, { duration: 0.8 }],
-    [".circle-3", { scale, transform }, { duration: 0.8 }],
-    [".circle-4", { scale, transform }, { duration: 0.8 }],
-    [".circle-5", { scale, transform }, { duration: 0.8 }],
+    { target: ".circle-1", scale, yMove, duration: 0.8 },
+    { target: ".circle-2", scale, yMove, duration: 0.8 },
+    { target: ".circle-3", scale, yMove, duration: 0.8 },
+    { target: ".circle-4", scale, yMove, duration: 0.8 },
+    { target: ".circle-5", scale, yMove, duration: 0.8 },
   ];
 
   useEffect(() => {
     const runAnimation = () => {
-      sequence.forEach(([target, properties], index) => {
+      sequence.forEach(({ target, scale, yMove, duration }, index) => {
         setTimeout(() => {
-          animate(target, properties, { duration: 0.8 });
+          animate(target, { scale, y: yMove }, { duration });
         }, index * 800);
       });
     };
@@ -105,20 +194,20 @@ const Skeleton = () => {
   return (
     <div className="p-8 overflow-hidden h-full relative flex items-center justify-center">
       <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2">
-        <Container className="h-8 w-8 circle-1 border-2 border-grey-700">
-          <ClaudeLogo className="h-4 w-4 " />
+        <Container className="h-8 w-8 circle-1 border-2 border-gray-200">
+          <Star className="w-4 h-4 text-yellow-500" /> {/* Icona colorata */}
         </Container>
-        <Container className="h-12 w-12 circle-2 border-2 border-grey-700">
-          <Bolt className="h-6 w-6 dark:text-white" />
+        <Container className="h-12 w-12 circle-2 border-2 border-gray-200">
+          <TrendingUp className="h-6 w-6 text-green-500" /> {/* Icona colorata */}
         </Container>
-        <Container className="circle-3 border-2 border-grey-700">
-          <OpenAILogo className="h-8 w-8 dark:text-white" />
+        <Container className="circle-3 border-2 border-gray-200">
+          <Clock className="h-8 w-8 text-orange-500" /> {/* Icona colorata */}
         </Container>
-        <Container className="h-12 w-12 circle-4 border-2 border-grey-700">
-          <MetaIconOutline className="h-6 w-6 " />
+        <Container className="h-12 w-12 circle-4 border-2 border-gray-200">
+          <BarChart2 className="h-6 w-6 text-purple-500" /> {/* Icona colorata */}
         </Container>
-        <Container className="h-8 w-8 circle-5 border-2 border-grey-700">
-          <GeminiLogo className="h-4 w-4 " />
+        <Container className="h-8 w-8 circle-5 border-2 border-gray-200">
+          <Zap className="h-4 w-4 text-blue-500" /> {/* Icona colorata */}
         </Container>
       </div>
 
@@ -136,29 +225,34 @@ const Skeleton = () => {
 };
 
 const Sparkles = () => {
-  const randomMove = () => Math.random() * 2 - 1;
-  const randomOpacity = () => Math.random();
-  const random = () => Math.random();
+  const sparkles = useRef(
+    Array.from({ length: 12 }, () => ({
+      top: `${Math.random() * 100}%`,
+      left: `${Math.random() * 100}%`,
+      opacity: Math.random(),
+      duration: Math.random() * 2 + 4,
+      move: Math.random() * 2 - 1,
+    }))
+  ).current;
+
   return (
     <div className="absolute inset-0">
-      {[...Array(12)].map((_, i) => (
+      {sparkles.map((sparkle, i) => (
         <motion.span
-          key={`star-${i}`}
+          key={`sparkle-${i}`}
           animate={{
-            top: `calc(${Math.random() * 100}% + ${randomMove()}px)`,
-            left: `calc(${Math.random() * 100}% + ${randomMove()}px)`,
-            opacity: randomOpacity(),
+            top: `calc(${sparkle.top} + ${sparkle.move}px)`,
+            left: `calc(${sparkle.left} + ${sparkle.move}px)`,
+            opacity: sparkle.opacity,
             scale: [1, 1.2, 0],
           }}
           transition={{
-            duration: random() * 2 + 4,
+            duration: sparkle.duration,
             repeat: Infinity,
             ease: "linear",
           }}
           style={{
             position: "absolute",
-            top: `${Math.random() * 100}%`,
-            left: `${Math.random() * 100}%`,
             width: `2px`,
             height: `2px`,
             borderRadius: "50%",
@@ -171,30 +265,69 @@ const Sparkles = () => {
   );
 };
 
-const CollectorsIntuition = ({ factors }: { factors: IntuitionFactor[] }) => (
-  <div className="flex flex-col gap-4">
-    {factors.map((factor, index) => (
-      <div key={index} className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          {factor.icon}
-          <span>{factor.name}</span>
+const CollectorsIntuition = ({ factors }: { factors: IntuitionFactor[] }) => {
+  const [infoVisible, setInfoVisible] = useState<{ [key: string]: boolean }>({});
+
+  const handleInfoClick = (factorName: string) => {
+    setInfoVisible((prev) => ({ ...prev, [factorName]: !prev[factorName] }));
+  };
+
+  const getInfoContent = (factorName: string) => {
+    switch (factorName) {
+      case "Rarità":
+        return "La rarità indica quanto è comune o raro un oggetto. Valori possibili: Comune, Non comune, Raro, Leggendario.";
+      case "Domanda di Mercato":
+        return "La domanda di mercato rappresenta quanto è richiesto un oggetto attualmente.";
+      case "Longevità":
+        return "La longevità misura quanto un oggetto può mantenere il suo valore nel tempo.";
+      case "Tendenze di Mercato":
+        return "Le tendenze di mercato indicano come sta cambiando il valore di un oggetto nel tempo.";
+      default:
+        return "Nessuna informazione disponibile.";
+    }
+  };
+
+  return (
+    <div className="flex flex-col gap-4">
+      {factors.map((factor, index) => (
+        <div key={index} className="relative flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            {factor.icon}
+            <span className={cn("text-sm text-gray-600")}>{factor.name}</span>
+          </div>
+          <div className="flex items-center gap-2 relative">
+            <span className={cn("text-sm font-semibold")}>{factor.score}</span>
+            <button
+              onClick={() => handleInfoClick(factor.name)}
+              className="ml-2 p-1 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
+              aria-label={`Informazioni su ${factor.name}`}
+            >
+              <Info className="w-4 h-4 text-gray-800 dark:text-gray-200" />
+            </button>
+            {infoVisible[factor.name] && (
+              <div className="absolute right-2 top-full transform mt-2 w-64 p-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded shadow-lg z-50">
+                <p className="text-sm text-gray-800 dark:text-gray-200">
+                  {getInfoContent(factor.name)}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
-        <span>{factor.score}</span>
-      </div>
-    ))}
-  </div>
-);
+      ))}
+    </div>
+  );
+};
 
 const fetchCollectibleEstimation = async (articleDetails: ArticleDetails): Promise<EstimationResponse> => {
-  const prompt = `Usa questi dettagli per stimare la rarità, la domanda di mercato, le condizioni e la provenienza di un articolo:
-  Nome: ${articleDetails.name}
-  Categoria: ${articleDetails.category}
-  Anno: ${articleDetails.year}
-  Prezzo d'acquisto: ${articleDetails.purchasePrice}
-  Data d'acquisto: ${articleDetails.purchaseDate}
-  Valore attuale: ${articleDetails.currentValue}
+  const prompt = `Usa questi dettagli per stimare la rarità, la domanda di mercato, la longevità e le tendenze di mercato di un articolo:
+Nome: ${articleDetails.name}
+Categoria: ${articleDetails.category}
+Anno: ${articleDetails.year}
+Prezzo d'acquisto: ${articleDetails.purchasePrice}
+Data d'acquisto: ${articleDetails.purchaseDate}
+Valore attuale: ${articleDetails.currentValue}
 
-  OUTPUT ONLY JSON: rarity, marketDemand, condition, provenance. NO OTHER TEXT`;
+OUTPUT ONLY JSON: rarity, marketDemand, longevity, marketTrends. NO OTHER TEXT`;
 
   console.log("Prompt inviato:", prompt);
 
@@ -222,8 +355,6 @@ const fetchCollectibleEstimation = async (articleDetails: ArticleDetails): Promi
     throw new Error('API request failed');
   }
 };
-
-{/* EXPORT */}
 
 export const CardSkeletonContainer = ({
   className,
@@ -266,126 +397,5 @@ const Container = ({
     >
       {children}
     </div>
-  );
-};
-
-export const ClaudeLogo = ({ className }: { className?: string }) => {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      shapeRendering="geometricPrecision"
-      textRendering="geometricPrecision"
-      imageRendering="optimizeQuality"
-      fillRule="evenodd"
-      clipRule="evenodd"
-      viewBox="0 0 512 512"
-      className={className}
-    >
-      <rect fill="#CC9B7A" width="512" height="512" rx="104.187" ry="105.042" />
-      <path
-        fill="#1F1F1E"
-        fillRule="nonzero"
-        d="M318.663 149.787h-43.368l78.952 212.423 43.368.004-78.952-212.427zm-125.326 0l-78.952 212.427h44.255l15.932-44.608 82.846-.004 16.107 44.612h44.255l-79.126-212.427h-45.317zm-4.251 128.341l26.91-74.701 27.083 74.701h-53.993z"
-      />
-    </svg>
-  );
-};
-
-export const OpenAILogo = ({ className }: { className?: string }) => {
-  return (
-    <svg
-      className={className}
-      width="28"
-      viewBox="0 0 28 28"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M26.153 11.46a6.888 6.888 0 0 0-.608-5.73 7.117 7.117 0 0 0-3.29-2.93 7.238 7.238 0 0 0-4.41-.454 7.065 7.065 0 0 0-2.41-1.742A7.15 7.15 0 0 0 12.514 0a7.216 7.216 0 0 0-4.217 1.346 7.061 7.061 0 0 0-2.603 3.539 7.12 7.12 0 0 0-2.734 1.188A7.012 7.012 0 0 0 .966 8.268a6.979 6.979 0 0 0 .88 8.273 6.89 6.89 0 0 0 .607 5.729 7.117 7.117 0 0 0 3.29 2.93 7.238 7.238 0 0 0 4.41.454 7.061 7.061 0 0 0 2.409 1.742c.92.404 1.916.61 2.923.604a7.215 7.215 0 0 0 4.22-1.345 7.06 7.06 0 0 0 2.605-3.543 7.116 7.116 0 0 0 2.734-1.187 7.01 7.01 0 0 0 1.993-2.196 6.978 6.978 0 0 0-.884-8.27Zm-10.61 14.71c-1.412 0-2.505-.428-3.46-1.215.043-.023.119-.064.168-.094l5.65-3.22a.911.911 0 0 0 .464-.793v-7.86l2.389 1.36a.087.087 0 0 1 .046.065v6.508c0 2.952-2.491 5.248-5.257 5.248ZM4.062 21.354a5.17 5.17 0 0 1-.635-3.516c.042.025.115.07.168.1l5.65 3.22a.928.928 0 0 0 .928 0l6.898-3.93v2.72a.083.083 0 0 1-.034.072l-5.711 3.255a5.386 5.386 0 0 1-4.035.522 5.315 5.315 0 0 1-3.23-2.443ZM2.573 9.184a5.283 5.283 0 0 1 2.768-2.301V13.515a.895.895 0 0 0 .464.793l6.897 3.93-2.388 1.36a.087.087 0 0 1-.08.008L4.52 16.349a5.262 5.262 0 0 1-2.475-3.185 5.192 5.192 0 0 1 .527-3.98Zm19.623 4.506-6.898-3.93 2.388-1.36a.087.087 0 0 1 .08-.008l5.713 3.255a5.28 5.28 0 0 1 2.054 2.118 5.19 5.19 0 0 1-.488 5.608 5.314 5.314 0 0 1-2.39 1.742v-6.633a.896.896 0 0 0-.459-.792Zm2.377-3.533a7.973 7.973 0 0 0-.168-.099l-5.65-3.22a.93.93 0 0 0-.928 0l-6.898 3.93V8.046a.083.083 0 0 1 .034-.072l5.712-3.251a5.375 5.375 0 0 1 5.698.241 5.262 5.262 0 0 1 1.865 2.28c.39.92.506 1.93.335 2.913ZM9.631 15.009l-2.39-1.36a.083.083 0 0 1-.046-.065V7.075c.001-.997.29-1.973.832-2.814a5.297 5.297 0 0 1 2.231-1.935 5.382 5.382 0 0 1 5.659.72 4.89 4.89 0 0 0-.168.093l-5.65 3.22a.913.913 0 0 0-.465.793l-.003 7.857Zm1.297-2.76L14 10.5l3.072 1.75v3.5L14 17.499l-3.072-1.75v-3.5Z"
-        fill="currentColor"
-      ></path>
-    </svg>
-  );
-};
-export const GeminiLogo = ({ className }: { className?: string }) => {
-  return (
-    <svg
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 16 16"
-      className={className}
-    >
-      <path
-        d="M16 8.016A8.522 8.522 0 008.016 16h-.032A8.521 8.521 0 000 8.016v-.032A8.521 8.521 0 007.984 0h.032A8.522 8.522 0 0016 7.984v.032z"
-        fill="url(#prefix__paint0_radial_980_20147)"
-      />
-      <defs>
-        <radialGradient
-          id="prefix__paint0_radial_980_20147"
-          cx="0"
-          cy="0"
-          r="1"
-          gradientUnits="userSpaceOnUse"
-          gradientTransform="matrix(16.1326 5.4553 -43.70045 129.2322 1.588 6.503)"
-        >
-          <stop offset=".067" stop-color="#9168C0" />
-          <stop offset=".343" stop-color="#5684D1" />
-          <stop offset=".672" stop-color="#1BA1E3" />
-        </radialGradient>
-      </defs>
-    </svg>
-  );
-};
-
-export const MetaIconOutline = ({ className }: { className?: string }) => {
-  return (
-    <svg
-      id="Layer_1"
-      data-name="Layer 1"
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 287.56 191"
-      className={className}
-    >
-      <defs>
-        <linearGradient
-          id="linear-gradient"
-          x1="62.34"
-          y1="101.45"
-          x2="260.34"
-          y2="91.45"
-          gradientTransform="matrix(1, 0, 0, -1, 0, 192)"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop offset="0" stop-color="#0064e1" />
-          <stop offset="0.4" stop-color="#0064e1" />
-          <stop offset="0.83" stop-color="#0073ee" />
-          <stop offset="1" stop-color="#0082fb" />
-        </linearGradient>
-        <linearGradient
-          id="linear-gradient-2"
-          x1="41.42"
-          y1="53"
-          x2="41.42"
-          y2="126"
-          gradientTransform="matrix(1, 0, 0, -1, 0, 192)"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop offset="0" stop-color="#0082fb" />
-          <stop offset="1" stop-color="#0064e0" />
-        </linearGradient>
-      </defs>
-      <path
-        fill="#0081fb"
-        d="M31.06,126c0,11,2.41,19.41,5.56,24.51A19,19,0,0,0,53.19,160c8.1,0,15.51-2,29.79-21.76,11.44-15.83,24.92-38,34-52l15.36-23.6c10.67-16.39,23-34.61,37.18-47C181.07,5.6,193.54,0,206.09,0c21.07,0,41.14,12.21,56.5,35.11,16.81,25.08,25,56.67,25,89.27,0,19.38-3.82,33.62-10.32,44.87C271,180.13,258.72,191,238.13,191V160c17.63,0,22-16.2,22-34.74,0-26.42-6.16-55.74-19.73-76.69-9.63-14.86-22.11-23.94-35.84-23.94-14.85,0-26.8,11.2-40.23,31.17-7.14,10.61-14.47,23.54-22.7,38.13l-9.06,16c-18.2,32.27-22.81,39.62-31.91,51.75C84.74,183,71.12,191,53.19,191c-21.27,0-34.72-9.21-43-23.09C3.34,156.6,0,141.76,0,124.85Z"
-      />
-      <path
-        fill="url(#linear-gradient)"
-        d="M24.49,37.3C38.73,15.35,59.28,0,82.85,0c13.65,0,27.22,4,41.39,15.61,15.5,12.65,32,33.48,52.63,67.81l7.39,12.32c17.84,29.72,28,45,33.93,52.22,7.64,9.26,13,12,19.94,12,17.63,0,22-16.2,22-34.74l27.4-.86c0,19.38-3.82,33.62-10.32,44.87C271,180.13,258.72,191,238.13,191c-12.8,0-24.14-2.78-36.68-14.61-9.64-9.08-20.91-25.21-29.58-39.71L146.08,93.6c-12.94-21.62-24.81-37.74-31.68-45C107,40.71,97.51,31.23,82.35,31.23c-12.27,0-22.69,8.61-31.41,21.78Z"
-      />
-      <path
-        fill="url(#linear-gradient-2)"
-        d="M82.35,31.23c-12.27,0-22.69,8.61-31.41,21.78C38.61,71.62,31.06,99.34,31.06,126c0,11,2.41,19.41,5.56,24.51L10.14,167.91C3.34,156.6,0,141.76,0,124.85,0,94.1,8.44,62.05,24.49,37.3,38.73,15.35,59.28,0,82.85,0Z"
-      />
-    </svg>
   );
 };

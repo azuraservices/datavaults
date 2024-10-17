@@ -115,7 +115,7 @@ export function AIIntuiter({ itemDetails }: { itemDetails: ArticleDetails }) {
       <div className="relative">
         <button
           onClick={toggleTooltip}
-          className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none"
+          className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none opacity-60"
           aria-label="Informazioni sui clic disponibili"
         >
           <Info className="w-4 h-4 text-gray-800 dark:text-gray-200" />
@@ -166,7 +166,7 @@ export function AIIntuiter({ itemDetails }: { itemDetails: ArticleDetails }) {
 const Skeleton = () => {
   return (
     <div className="p-8 overflow-hidden h-full relative flex items-center justify-center">
-      <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2 mt-4">
+      <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2 mt-2">
         <Container className="h-8 w-8 circle-1 border-2 border-gray-200">
           <Star className="w-4 h-4 text-yellow-500" /> {/* Icona colorata */}
         </Container>
@@ -185,11 +185,11 @@ const Skeleton = () => {
       </div>
 
       <motion.div
-        className="h-40 w-px absolute top-20 m-auto z-40 bg-gradient-to-b from-transparent via-cyan-500 to-transparent"
+        className="h-40 w-px absolute top-18 m-auto z-40 bg-gradient-to-b from-transparent via-cyan-500 to-transparent"
         animate={{ x: [-130, 130] }}
         transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
       >
-        <div className="w-10 h-32 top-1/2 -translate-y-1/2 absolute -left-10">
+        <div className="w-10 h-40 top-1/2 -translate-y-1/2 absolute -left-10">
           <Sparkles />
         </div>
       </motion.div>
@@ -272,7 +272,7 @@ const CollectorsIntuition = ({ factors }: { factors: IntuitionFactor[] }) => {
             <span className={cn("text-sm font-semibold")}>{factor.score}</span>
             <button
               onClick={() => handleInfoClick(factor.name)}
-              className="ml-2 p-1 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600"
+              className="ml-2 p-1 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 opacity-60"
               aria-label={`Informazioni su ${factor.name}`}
             >
               <Info className="w-4 h-4 text-gray-800 dark:text-gray-200" />

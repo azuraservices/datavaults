@@ -5,8 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { EuroIcon, Pencil, Trash2, RefreshCw } from 'lucide-react';
-
-import { CardDemo } from './ui/animatedcircles';
+import { AIIntuiter } from './ui/animatedcircles';
 
 interface ItemCardProps {
   item: VintageItem;
@@ -73,7 +72,7 @@ export default function ItemCard({ item, onEdit, onSell, onUpdateValue, onDelete
             </div>
             {/* Add AnimatedTooltip component before the profit */}
             <div className="m-0">
-              <CardDemo 
+              <AIIntuiter 
                 itemDetails={{
                 name: item.name,
                 category: item.category,

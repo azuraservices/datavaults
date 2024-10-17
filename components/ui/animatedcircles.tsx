@@ -27,7 +27,7 @@ interface EstimationResponse {
   marketTrends: string;
 }
 
-export function CardDemo({ itemDetails }: { itemDetails: ArticleDetails }) {
+export function AIIntuiter({ itemDetails }: { itemDetails: ArticleDetails }) {
   const [isContentVisible, setIsContentVisible] = useState(false);
   const [factors, setFactors] = useState<IntuitionFactor[]>([]);
   const [loading, setLoading] = useState(false);
@@ -134,7 +134,7 @@ export function CardDemo({ itemDetails }: { itemDetails: ArticleDetails }) {
 
   return (
     <div className="relative">
-      <div className="absolute top-0 right-0 mt-2 mr-2 z-20">
+      <div className="absolute top-0 right-0 mt-0 mr-0 z-20">
         <InfoIcon remainingClicks={remainingClicks} resetTime={resetTime} />
       </div>
 
@@ -198,10 +198,10 @@ const Skeleton = () => {
           <Star className="w-4 h-4 text-yellow-500" /> {/* Icona colorata */}
         </Container>
         <Container className="h-12 w-12 circle-2 border-2 border-gray-200">
-          <TrendingUp className="h-6 w-6 text-green-500" /> {/* Icona colorata */}
+          <Clock className="h-6 w-6 text-orange-500" /> {/* Icona colorata */}
         </Container>
         <Container className="circle-3 border-2 border-gray-200">
-          <Clock className="h-8 w-8 text-orange-500" /> {/* Icona colorata */}
+          <TrendingUp className="h-8 w-8 text-green-500" /> {/* Icona colorata */}
         </Container>
         <Container className="h-12 w-12 circle-4 border-2 border-gray-200">
           <BarChart2 className="h-6 w-6 text-purple-500" /> {/* Icona colorata */}

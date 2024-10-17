@@ -287,7 +287,9 @@ const CollectorsIntuition = ({ factors }: { factors: IntuitionFactor[] }) => {
           </div>
         </div>
       ))}
+      <hr className="mt-4 border-gray-200 dark:border-gray-700" />
     </div>
+
   );
 };
 

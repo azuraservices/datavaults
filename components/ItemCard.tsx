@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { EuroIcon, Pencil, Trash2, RefreshCw } from 'lucide-react';
 import { AIIntuiter } from './ui/animatedcircles';
+import AIIntuiterSwitch from './ui/switchestimator'
 
 interface ItemCardProps {
   item: VintageItem;
@@ -71,6 +72,21 @@ export default function ItemCard({ item, onEdit, onSell, onUpdateValue, onDelete
               </div>
             </div>
             {/* Add AnimatedTooltip component before the profit */}
+
+            <div className='m-0 pb-4'>
+              <AIIntuiterSwitch 
+                  itemDetails={{
+                  name: item.name,
+                  category: item.category,
+                  year: item.year,
+                  purchasePrice: item.purchasePrice,
+                  purchaseDate: item.purchaseDate,
+                  currentValue: item.currentValue,
+                }}
+                />
+            </div>
+            
+            {/*
             <div className="m-0">
               <AIIntuiter 
                 itemDetails={{
@@ -82,8 +98,8 @@ export default function ItemCard({ item, onEdit, onSell, onUpdateValue, onDelete
                 currentValue: item.currentValue,
               }}
               />
-              
-            </div>
+
+            </div> */}
 
             <div className="mb-4 flex items-center justify-between">
               <div>

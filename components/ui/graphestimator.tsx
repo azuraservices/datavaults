@@ -217,7 +217,7 @@ const CollectorsIntuition = ({ factors, onEstimateClick }: { factors: IntuitionF
                   dataKey="score"
                   position="right"
                   offset={10}
-                  formatter={(value) => `${value}/10`}
+                  formatter={(value: number) => `${value}/10`}
                 />
               </Bar>
             </BarChart>

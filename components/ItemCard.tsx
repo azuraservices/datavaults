@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { EuroIcon, Pencil, Trash2, RefreshCw } from 'lucide-react';
 import { AIIntuiter } from './ui/animatedcircles';
 import AIIntuiterSwitch from './ui/switchestimator'
+import AICollectorEstimator from './ui/graphestimator'
 
 interface ItemCardProps {
   item: VintageItem;
@@ -73,8 +74,8 @@ export default function ItemCard({ item, onEdit, onSell, onUpdateValue, onDelete
             </div>
             {/* Add AnimatedTooltip component before the profit */}
 
-            <div className='m-0 pb-4'>
-              <AIIntuiterSwitch 
+            <div className='m-0 pb-4 w-full'>
+              <AICollectorEstimator
                   itemDetails={{
                   name: item.name,
                   category: item.category,

@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button"
 interface IntuitionFactor {
   name: string;
   score: number;
-  icon: React.ReactNode;
+  icon: React.ReactElement;
   color: string;
 }
 

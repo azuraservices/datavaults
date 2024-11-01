@@ -203,9 +203,9 @@ const CollectorsIntuition = ({ factors, onEstimateClick }: { factors: IntuitionF
                     const { x, y, width, height, value, index } = props
                     return (
                       <g>
-                        <foreignObject x={x ? x + 5 : 0} y={y ?? 0} width={width ?? 20} height={height ?? 20}>
+                        <foreignObject x={x ? Number(x) + 5 : 0} y={y ? Number(y) : 0} width={width ?? 20} height={height ?? 20}>
                           <div className="flex items-center h-full text-white">
-                            {React.cloneElement(factors[index].icon, { className: "w-4 h-4 mr-2" })}
+                          {index !== undefined && React.cloneElement(factors[index].icon, { className: "w-4 h-4 mr-2" })}
                             <span className="text-sm">{value}</span>
                           </div>
                         </foreignObject>

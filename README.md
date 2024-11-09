@@ -1,10 +1,10 @@
-# ObjectVAULT - readme.md
+# DataVault - readme.md
 
 ## Overview
 
-**ObjectVault** is a React-based web application that allows users to track and manage vintage items, providing detailed statistics on their collection, including potential profits and valuations. It includes a simple UI for adding, editing, and selling vintage items, and displays statistics on sold and unsold items, total spending, and profits. 
+**DataVault** is a React-based web application that allows users to track and manage vintage items, providing detailed statistics on their collection, including potential profits and valuations. It includes a simple UI for adding, editing, and selling vintage items, and displays statistics on sold and unsold items, total spending, and profits. 
 
-ObjectVault also integrates a system with **3 agents that work together to retrieve suggested prices for vintage items.** These agents gather information, analyze price ranges, and return the most probable current value for each item.
+DataVault also integrates a system with **3 agents that work together to retrieve suggested prices for vintage items.** These agents gather information, analyze price ranges, and return the most probable current value for each item.
 
 ## Features
 
@@ -51,14 +51,14 @@ ObjectVault also integrates a system with **3 agents that work together to retri
 
 ## Development
 
-To contribute to ObjectVault or customize it:
+To contribute to DataVault or customize it:
 
 1. Fork the repository and create a new branch for your feature or fix.
 
 2. Submit a pull request with a detailed description of the changes.
 
 
-## **Happy tracking with ObjectVault!**
+## **Happy tracking with DataVault!**
    ```bash
    @azuraservices
    ```

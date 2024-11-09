@@ -8,7 +8,7 @@ import React from 'react';
 interface FooterProps {
   onAddItem: () => void;
   onAddRandomItem: () => void;
-  items: VintageItem[]; // aggiungiamo questa prop
+  items?: VintageItem[]; // aggiungiamo questa prop
 }
 
 export default function Footer({ onAddItem, onAddRandomItem, items }: FooterProps) {

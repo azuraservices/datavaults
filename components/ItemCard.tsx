@@ -72,7 +72,7 @@ export default function ItemCard({ item, onEdit, onSell, onUpdateValue, onDelete
                 <p className="text-lg font-bold">{item.purchaseDate}</p>
               </div>
             </div>
-            {/* Add AnimatedTooltip component before the profit */}
+            {/* Add AnimatedTooltip component before the profit 
 
             <div className='m-0 pb-4 w-full'>
               <AICollectorEstimator
@@ -86,21 +86,7 @@ export default function ItemCard({ item, onEdit, onSell, onUpdateValue, onDelete
                 }}
                 />
             </div>
-            
-            {/*
-            <div className="m-0">
-              <AIIntuiter 
-                itemDetails={{
-                name: item.name,
-                category: item.category,
-                year: item.year,
-                purchasePrice: item.purchasePrice,
-                purchaseDate: item.purchaseDate,
-                currentValue: item.currentValue,
-              }}
-              />
-
-            </div> */}
+            */}
 
             <div className="mb-4 flex items-center justify-between">
               <div>

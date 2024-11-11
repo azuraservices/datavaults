@@ -6,6 +6,10 @@
 
 DataVault also integrates a system with **3 agents that work together to retrieve suggested prices for vintage items.** These agents gather information, analyze price ranges, and return the most probable current value for each item.
 
+## Demo
+
+<img src="public/datavaultdemo.gif" alt="Demo" width="281" height="500">
+
 ## Features
 
 - **Add, Edit, Delete Items:** Easily manage a list of vintage items with fields such as name, category, year, purchase price, and current value.

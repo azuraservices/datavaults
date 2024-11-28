@@ -88,7 +88,7 @@ export default function AddItemDialog({ isOpen, onClose, onAdd }: AddItemDialogP
       'Content-Type': 'application/json',
     };
     const data = {
-      model: 'llama-3.2-90b-text-preview',
+      model: 'llama-3.2-90b-vision-preview',
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.5,
       max_tokens: 150,
